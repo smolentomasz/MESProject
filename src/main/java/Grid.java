@@ -10,6 +10,9 @@ public class Grid {
 
     int elementsAmount;
     int nodesAmount;
+    private double alfa;
+    private double t_oo;
+    private UniversalElement universalElement;
 
     public double[] getPG() {
         return PG;
@@ -23,6 +26,9 @@ public class Grid {
         return CG;
     }
 
+    public Element[] getElements() {
+        return elements;
+    }
 
     public Node[] getNodes() {
         return nodes;
@@ -37,16 +43,17 @@ public class Grid {
 
         this.elementsAmount = globalData.getElementsAmount();
         this.nodesAmount = globalData.getNodesAmount();
-        double alfa = globalData.getAlfa();
+        this.alfa = globalData.getAlfa();
         double conductivity = globalData.getConductivity();
         double density = globalData.getDensity();
-        double t_oo = globalData.getT_oo();
+        this.t_oo = globalData.getT_oo();
 
         double initialTemperature = globalData.getInitialTemperature();
         double specific_heat = globalData.getSpecific_heat();
         double simulation_time = globalData.getSimulation_time();
         double step_tiem = globalData.getStep_time();
 
+        this.universalElement = new UniversalElement();
         this.nodes = new Node[nodesAmount];
         this.elements = new Element[elementsAmount];
 
@@ -56,8 +63,6 @@ public class Grid {
         for(int i=0;i<elementsAmount;i++){
             elements[i] = new Element();
         }
-
-
 
         PG = new double[nodesAmount];
         HG = new double[nodesAmount][nodesAmount];
@@ -83,23 +88,13 @@ public class Grid {
         int el = 1;
         for(int i=0;i<elementsAmount;i++){
             elements[i].setID(el, nHeight);
+            elements[i].setConductivity(conductivity);
+            elements[i].setDensity(density);
+            elements[i].setSpecific_heat(specific_heat);
             el++;
             if(el % nHeight == 0)
                 el++;
         }
-
-
-        UniversalElement universalElement = new UniversalElement();
-        Node[] localNodes = new Node[4];
-        for(int i=0;i<elementsAmount;i++){
-            for(int j=0;j<4;j++){
-                localNodes[j] = nodes[elements[i].getID()[j] - 1];
-            }
-            elements[i].setHL(universalElement.H_HBcAggregate(localNodes, conductivity, alfa));
-            elements[i].setCL(universalElement.C(localNodes, specific_heat, density));
-            elements[i].setPL(universalElement.vectorP(localNodes, alfa, t_oo));
-        }
-        aggregate();
     }
     public void getInformationAboutElement(int number){
         for(int i=0;i<4;i++){
@@ -120,6 +115,18 @@ public class Grid {
         selectedNodes[3] = nodes[ID4 - 1];
 
         return selectedNodes;
+    }
+    public void createLocalMatrixes(){
+        Node[] localNodes = new Node[4];
+        for(int i=0;i<elementsAmount;i++){
+            for(int j=0;j<4;j++){
+                localNodes[j] = nodes[elements[i].getID()[j] - 1];
+            }
+            elements[i].setHL(universalElement.H_HBcAggregate(localNodes, elements[i].getConductivity(), alfa));
+            elements[i].setCL(universalElement.C(localNodes, elements[i].getSpecific_heat(), elements[i].getDensity()));
+            elements[i].setPL(universalElement.vectorP(localNodes, alfa, t_oo));
+        }
+
     }
     public void aggregate(){
         for(int i=0;i<elementsAmount;i++){

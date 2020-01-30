@@ -45,4 +45,7 @@ public class Node {
         else
             BC = false;
     }
+    public void setBCReact(boolean BCCondition){
+        this.BC = BCCondition;
+    }
 }

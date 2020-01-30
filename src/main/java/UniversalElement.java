@@ -118,28 +118,9 @@ public class UniversalElement {
         }
         return tabHi;
     }
-    public void printArray(double[][] array, int size){
-        for(int i=0;i<size;i++){
-            for(int j=0;j<size;j++){
-                System.out.print(array[i][j] + " ");
-            }
-            System.out.print("\n");
-        }
-    }
     public double detJ(Node[] nodes, int pointNumber){
         LocalPoint integrationPoint = gridPoints[pointNumber - 1];
         return dXdKsi(nodes, integrationPoint) * dYdEta(nodes, integrationPoint) - dYdKsi(nodes, integrationPoint) * dXdEta(nodes, integrationPoint);
-    }
-    public double[][] jacobianTab(Node[] nodes, int pointNumber){
-        LocalPoint integrationPoint = gridPoints[pointNumber - 1];
-        double[][] jacobTab = new double[2][2];
-
-        jacobTab[0][0] = dXdKsi(nodes, integrationPoint);
-        jacobTab[0][1] = dXdEta(nodes, integrationPoint);
-        jacobTab[1][0] = dYdKsi(nodes, integrationPoint);
-        jacobTab[1][1] = dYdEta(nodes, integrationPoint);
-
-        return jacobTab;
     }
     public double[][] H(Node[] nodes, double k_t){
         int size = 4;
@@ -175,7 +156,8 @@ public class UniversalElement {
         if(nodes[0].isBC() && nodes[1].isBC()){
             LocalPoint pkt1 = new LocalPoint(-1.0 / Math.sqrt(3), -1);
             LocalPoint pkt2 = new LocalPoint(1.0 / Math.sqrt(3), -1);
-            detJ1D = 0.5 * (nodes[1].getX() - nodes[0].getX());
+
+            detJ1D = 0.5 * Math.sqrt(Math.pow(nodes[1].getX() - nodes[0].getX(),2) + Math.pow(nodes[1].getY() - nodes[0].getY(),2));
 
             double[] shapeVector1 = new double[size];
             shapeVector1 = fillVector(shapeVector1, pkt1);
@@ -194,7 +176,7 @@ public class UniversalElement {
             LocalPoint pkt1 = new LocalPoint(1, -1.0 / Math.sqrt(3));
             LocalPoint pkt2 = new LocalPoint(1, 1.0 / Math.sqrt(3));
 
-            detJ1D = 0.5 * (nodes[2].getY() - nodes[1].getY());
+            detJ1D = 0.5 * Math.sqrt(Math.pow(nodes[2].getX() - nodes[1].getX(),2) + Math.pow(nodes[2].getY() - nodes[1].getY(),2));
 
             double[] shapeVector1 = new double[size];
             shapeVector1 = fillVector(shapeVector1, pkt1);
@@ -212,7 +194,7 @@ public class UniversalElement {
             LocalPoint pkt1 = new LocalPoint(1.0 / Math.sqrt(3), 1);
             LocalPoint pkt2 = new LocalPoint(-1.0 / Math.sqrt(3), 1);
 
-            detJ1D = 0.5 * (nodes[2].getX() - nodes[3].getX());
+            detJ1D = 0.5 * Math.sqrt(Math.pow(nodes[2].getX() - nodes[3].getX(),2) + Math.pow(nodes[2].getY() - nodes[3].getY(),2));
 
             double[] shapeVector1 = new double[size];
             shapeVector1 = fillVector(shapeVector1, pkt1);
@@ -231,7 +213,7 @@ public class UniversalElement {
             LocalPoint pkt1 = new LocalPoint(-1, 1.0 / Math.sqrt(3));
             LocalPoint pkt2 = new LocalPoint(-1, -1.0 / Math.sqrt(3));
 
-            detJ1D = 0.5 * (nodes[3].getY() - nodes[0].getY());
+            detJ1D = 0.5 * Math.sqrt(Math.pow(nodes[3].getX() - nodes[0].getX(),2) + Math.pow(nodes[3].getY() - nodes[0].getY(),2));
 
             double[] shapeVector1 = new double[size];
             shapeVector1 = fillVector(shapeVector1, pkt1);
@@ -299,7 +281,7 @@ public class UniversalElement {
         if(nodes[0].isBC() && nodes[1].isBC()){
             LocalPoint pkt1 = new LocalPoint(-1.0 / Math.sqrt(3), -1);
             LocalPoint pkt2 = new LocalPoint(1.0 / Math.sqrt(3), -1);
-            detJ1D = 0.5 * (nodes[1].getX() - nodes[0].getX());
+            detJ1D = 0.5 * Math.sqrt(Math.pow(nodes[1].getX() - nodes[0].getX(),2) + Math.pow(nodes[1].getY() - nodes[0].getY(),2));
 
             double[] shapeVector1 = new double[size];
             shapeVector1 = fillVector(shapeVector1, pkt1);
@@ -315,7 +297,7 @@ public class UniversalElement {
             LocalPoint pkt1 = new LocalPoint(1, -1.0 / Math.sqrt(3));
             LocalPoint pkt2 = new LocalPoint(1, 1.0 / Math.sqrt(3));
 
-            detJ1D = 0.5 * (nodes[2].getY() - nodes[1].getY());
+            detJ1D = 0.5 * Math.sqrt(Math.pow(nodes[2].getX() - nodes[1].getX(),2) + Math.pow(nodes[2].getY() - nodes[1].getY(),2));
 
             double[] shapeVector1 = new double[size];
             shapeVector1 = fillVector(shapeVector1, pkt1);
@@ -331,7 +313,7 @@ public class UniversalElement {
             LocalPoint pkt1 = new LocalPoint(1.0 / Math.sqrt(3), 1);
             LocalPoint pkt2 = new LocalPoint(-1.0 / Math.sqrt(3), 1);
 
-            detJ1D = 0.5 * (nodes[2].getX() - nodes[3].getX());
+            detJ1D = 0.5 * Math.sqrt(Math.pow(nodes[2].getX() - nodes[3].getX(),2) + Math.pow(nodes[2].getY() - nodes[3].getY(),2));
 
             double[] shapeVector1 = new double[size];
             shapeVector1 = fillVector(shapeVector1, pkt1);
@@ -348,7 +330,7 @@ public class UniversalElement {
             LocalPoint pkt1 = new LocalPoint(-1, 1.0 / Math.sqrt(3));
             LocalPoint pkt2 = new LocalPoint(-1, -1.0 / Math.sqrt(3));
 
-            detJ1D = 0.5 * (nodes[3].getY() - nodes[0].getY());
+            detJ1D = 0.5 * Math.sqrt(Math.pow(nodes[3].getX() - nodes[0].getX(),2) + Math.pow(nodes[3].getY() - nodes[0].getY(),2));
 
             double[] shapeVector1 = new double[size];
             shapeVector1 = fillVector(shapeVector1, pkt1);
